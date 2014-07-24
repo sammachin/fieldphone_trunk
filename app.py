@@ -24,7 +24,7 @@ class Start(object):
 		return str(r)
 	def outbound(self, var=None, **params):
 		to_uri = urllib.unquote(cherrypy.request.params['To'])
-		number = to_uri.split("@")[0].split(":")[1]
+		number = "44" + to_uri.split("@")[0].split(":")[1].lstrip("0")
 		r = twiml.Response()
 		d = twiml.Dial(callerId="441172001500")
 		d.number(number)
