@@ -10,7 +10,7 @@ def fake_wait_for_occupied_port(host, port):
 servers.wait_for_occupied_port = fake_wait_for_occupied_port
 
 class Start(object):
-	def call(self, var=None, **params):
+	def inbound(self, var=None, **params):
 		r = twiml.Response()
 		r.play("http://s3.sammachin.com/welcometofieldphone.wav")
 		r.gather(numDigits=5, action="/route", method="POST")
@@ -22,8 +22,17 @@ class Start(object):
 		d.sip("sip:%s@phone.emf.camp:9252" % number)
 		r.append(d)
 		return str(r)
-	call.exposed = True
+	def outbound(self, var=None, **params):
+		to_uri = urllib.unquote(cherrypy.request.params['To'])
+		number = to_uri.split("@")[0].split(":")[1]
+		r = twiml.Response()
+		d = twiml.Dial()
+		d.number(number)
+		r.append(d)
+		return str(r)
+	inbound.exposed = True
 	route.exposed = True
+	outbound.exposed = True
 
 cherrypy.config.update({'server.socket_host': '0.0.0.0',})
 cherrypy.config.update({'server.socket_port': int(os.environ.get('PORT', '5000')),})
