@@ -4,8 +4,6 @@ from cherrypy.process import servers
 from twilio import twiml
 import urllib
 
-
-
 def fake_wait_for_occupied_port(host, port): 
 	return
 
@@ -14,7 +12,7 @@ servers.wait_for_occupied_port = fake_wait_for_occupied_port
 class Start(object):
 	def call(self, var=None, **params):
 		r = twiml.Response()
-		r.say("Welcome to field phone, please enter the number you wish to dial")
+		r.play("http://s3.sammachin.com/welcometofieldphone.wav")
 		r.gather(numDigits=5, action="/route", method="POST")
 		return str(r)
 	def route(self, var=None, **params):
